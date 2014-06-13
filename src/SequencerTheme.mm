@@ -1,8 +1,8 @@
 //
 //  SequencerTheme.cpp
-//  BodySequencer
+//  PSEQ
 //
-//  Created by Serkan Sökmen on 17.09.2013.
+//  Created by Serkan Sökmen on 13/06/14.
 //
 //
 

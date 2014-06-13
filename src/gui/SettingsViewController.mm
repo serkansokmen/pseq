@@ -1,6 +1,6 @@
 //
 //  SettingsViewController.m
-//  PaperSequencer
+//  PSEQ
 //
 //  Created by Serkan Sökmen on 13/06/14.
 //

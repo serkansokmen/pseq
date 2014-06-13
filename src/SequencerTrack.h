@@ -1,8 +1,8 @@
 //
 //  SequencerTrack.h
-//  TUIOSequencer
+//  PSEQ
 //
-//  Created by Serkan Sokmen on 14.08.2013.
+//  Created by Serkan Sokmen on 13/06/14.
 //
 //
 

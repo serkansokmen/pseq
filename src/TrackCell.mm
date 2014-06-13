@@ -1,8 +1,8 @@
 //
 //  TrackCell.cpp
-//  TUIOSequencer
+//  PSEQ
 //
-//  Created by Serkan Sokmen on 31.07.2013.
+//  Created by Serkan Sokmen on 13/06/14.
 //
 //
 
