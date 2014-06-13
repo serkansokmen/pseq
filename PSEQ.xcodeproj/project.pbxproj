@@ -14,7 +14,6 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		207E7A10194A5E2500F7E0D3 /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 207E7A0E194A5E2500F7E0D3 /* SettingsViewController.mm */; };
 		207E7A11194A5E2500F7E0D3 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207E7A0F194A5E2500F7E0D3 /* SettingsViewController.xib */; };
-		207E7A39194B0FF800F7E0D3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 207E7A38194B0FF800F7E0D3 /* Images.xcassets */; };
 		250A95BA26587BE85DB0A353 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE9C7160245B19131DAE6128 /* ofxCvColorImage.cpp */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		360D5B74D6C18FC57E0A099D /* ofxTweener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D852339534D186876F18A318 /* ofxTweener.cpp */; };
@@ -90,7 +89,6 @@
 		207E7A0D194A5E2500F7E0D3 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = gui/SettingsViewController.h; sourceTree = "<group>"; };
 		207E7A0E194A5E2500F7E0D3 /* SettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SettingsViewController.mm; path = gui/SettingsViewController.mm; sourceTree = "<group>"; };
 		207E7A0F194A5E2500F7E0D3 /* SettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SettingsViewController.xib; path = gui/SettingsViewController.xib; sourceTree = "<group>"; };
-		207E7A38194B0FF800F7E0D3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PaperSequencer/Images.xcassets; sourceTree = "<group>"; };
 		2857B27276A2E76DDED1C528 /* SequencerTheme.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; name = SequencerTheme.mm; path = src/SequencerTheme.mm; sourceTree = SOURCE_ROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2B40EDA85BEB63E46785BC29 /* tinyxml.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = tinyxml.cpp; path = ../../../addons/ofxXmlSettings/libs/tinyxml.cpp; sourceTree = SOURCE_ROOT; };
@@ -389,7 +387,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				207E7A38194B0FF800F7E0D3 /* Images.xcassets */,
 				678E130917951536005B6D19 /* Icon.png */,
 				678E130717951530005B6D19 /* Icon@2x.png */,
 				678E130B1795153C005B6D19 /* Default.png */,
@@ -812,7 +809,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				207E7A39194B0FF800F7E0D3 /* Images.xcassets in Resources */,
 				E41D3ED713B38FB500A75A5D /* Project.xcconfig in Resources */,
 				E41D3EE613B3906D00A75A5D /* CoreOF.xcconfig in Resources */,
 				678E130817951530005B6D19 /* Icon@2x.png in Resources */,
