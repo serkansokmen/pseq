@@ -1,4 +1,4 @@
-PaperSequencer
+pseq
 ===
 
 Openframeworks Augmented Step Sequencer App
