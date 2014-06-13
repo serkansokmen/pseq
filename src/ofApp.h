@@ -3,18 +3,24 @@
 #include "ofMain.h"
 #include "ofxiOS.h"
 #include "ofxiOSExtras.h"
+#include "ofxOpenCv.h"
+#include "ofxXmlSettings.h"
+#include "MSABPMTapper.h"
+
 #include "SequencerTheme.h"
 #include "Sequencer.h"
-#include "ofxOpenCv.h"
-#include "MSABPMTapper.h"
 
 
 using namespace msa;
 
 
+#define camWidth    480
+#define camHeight   360
+
+
 class ofApp : public ofxiOSApp {
 	
-    float       drawResizeFactor = 1.5f;
+    float       drawResizeFactor = 1.68f;
     int         columns = 4;
     int         rows = 4;
     
@@ -45,8 +51,9 @@ public:
     void currentThemeIdChanged(int &newThemeId);
     void bpmChanged(float &newBpm);
     
+    void saveSettings();
+    
     ofVideoGrabber  vidGrabber;
-    ofTexture       vidTexture;
     unsigned char   *pix;
     
     ofxCvColorImage			colorImg;
@@ -66,12 +73,14 @@ public:
     ofFbo           sequencerFbo;
     
     ofParameter<float>      bpm;
+    ofxXmlSettings          settingsXml;
     
     ofParameter<int>        currentThemeId;
     SequencerTheme          *currentTheme;
     vector<SequencerTheme>  themes;
     
     int 		threshold;
-    bool		bLearnBackground;
+    bool		bLearnBackground = true;
     bool        bDebugMode;
+    bool        bPlay = true;
 };

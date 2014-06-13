@@ -9,10 +9,9 @@
 #include "SequencerTheme.h"
 
 
-void SequencerTheme::setup(string soundPath, float bpm, const ofRectangle &rect, string bgPath){
+void SequencerTheme::setup(string soundPath, const ofRectangle &rect, string bgPath){
     
     this->soundPath = soundPath;
-    this->bpm = bpm;
     
     gridRect.set(rect);
     background.loadImage(bgPath);

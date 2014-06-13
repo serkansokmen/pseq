@@ -88,3 +88,4 @@ bin/data/settings.xml
 
 # Ignore soundbank files
 bin/data/soundbank/
+assets/

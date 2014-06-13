@@ -15,10 +15,15 @@
     ofApp *myApp;
 }
 
-- (IBAction)setBPM:(id)sender;
-- (IBAction)setThreshold:(id)sender;
-- (IBAction)done:(id)sender;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *themeSelector;
+@property (retain, nonatomic) IBOutlet UISlider *bpmSlider;
+@property (retain, nonatomic) IBOutlet UISlider *thresholdSlider;
+
+- (IBAction)setBPM:(UISlider *)sender;
+- (IBAction)setThreshold:(UISlider *)sender;
+- (IBAction)done:(UIButton *)sender;
 - (IBAction)switchTheme:(UISegmentedControl *)sender;
-- (IBAction)clearBackground:(id)sender;
+- (IBAction)clearBackground:(UIButton *)sender;
+- (IBAction)togglePlay:(UISwitch *)sender;
 
 @end

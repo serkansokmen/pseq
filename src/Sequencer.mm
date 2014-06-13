@@ -98,14 +98,6 @@ void Sequencer::draw(){
     for (int i=0; i<tracks.size(); i++){
         tracks[i].draw();
     }
-    
-//    for (int i=0; i<blobCenters.size(); i++){
-//        ofSetColor(0, 255, 0);
-//        ofNoFill();
-//        ofCircle(blobCenters[i], 40);
-//        ofFill();
-//        ofSetColor(255, 255, 255);
-//    }
 };
 
 //--------------------------------------------------------------

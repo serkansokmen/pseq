@@ -12,7 +12,7 @@
 //--------------------------------------------------------------
 void TrackCell::setup(const ofRectangle &bb, int s, const ofColor &c){
     
-    float padding = 8.0f;
+    float padding = 4.0f;
     
     step = s;
     
@@ -24,30 +24,12 @@ void TrackCell::setup(const ofRectangle &bb, int s, const ofColor &c){
     color.set(hue, saturation, brightness);
     
     boundingBox.set(bb);
-    outerBox.setFromCenter(boundingBox.getCenter(), boundingBox.getWidth() - padding*.2, boundingBox.getHeight() - padding*.2);
-    innerBox.setFromCenter(boundingBox.getCenter(), boundingBox.getWidth() - padding, boundingBox.getHeight() - padding);
-    
-    // Setup plane
-    float planeScale = 0.75;
-    int planeWidth = bb.getWidth() * planeScale;
-    int planeHeight = bb.getHeight() * planeScale;
-    int planeGridSize = 10;
-    int planeColums = planeWidth / planeGridSize;
-    int planeRows = planeHeight / planeGridSize;
-    
-#ifdef USE_CELL_SHADER
-#ifdef TARGET_OPENGLES
-    shader.load("shadersES2/trackcell");
-#else
-    if(ofIsGLProgrammableRenderer()){
-        shader.load("shadersGL3/trackcell");
-    }else{
-        shader.load("shadersGL2/trackcell");
-    }
-#endif
-    
-    plane.set(planeWidth, planeHeight, planeColums, planeRows, OF_PRIMITIVE_TRIANGLES);
-#endif
+    outerBox.setFromCenter(boundingBox.getCenter(),
+                           boundingBox.getWidth() - padding*.2,
+                           boundingBox.getHeight() - padding*.2);
+    innerBox.setFromCenter(boundingBox.getCenter(),
+                           boundingBox.getWidth() - padding,
+                           boundingBox.getHeight() - padding);
 }
 
 //--------------------------------------------------------------
@@ -82,14 +64,6 @@ void TrackCell::draw(){
         default:
             break;
     }
-#ifdef USE_CELL_SHADER
-    shader.begin();
-    ofPushMatrix();
-    ofTranslate(boundingBox.getX() + boundingBox.getWidth()*.5, boundingBox.getY() + boundingBox.getHeight()*.5);
-    plane.draw();
-    ofPopMatrix();
-    shader.end();
-#endif
 };
 
 //--------------------------------------------------------------

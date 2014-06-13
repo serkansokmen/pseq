@@ -2,8 +2,7 @@
 #include "SettingsViewController.h"
 
 
-#define camWidth    480
-#define camHeight   360
+#pragma mark - ofApp
 
 
 SettingsViewController *settingsViewController;
@@ -22,18 +21,14 @@ void ofApp::setup(){
     // ofSetVerticalSync(true);
     ofBackground(ofColor::black);
     ofSetFrameRate(30);
-    // ofSetLogLevel(OF_LOG_NOTICE);
+    ofSetLogLevel(OF_LOG_VERBOSE);
     
     vidGrabber.initGrabber(camWidth, camHeight, OF_PIXELS_BGRA);
-	vidTexture.allocate(camWidth, camHeight, GL_RGB);
-    colorImg.allocate(camWidth, camHeight);
+	colorImg.allocate(camWidth, camHeight);
     grayImage.allocate(camWidth, camHeight);
     processedImg.allocate(camWidth, camHeight);
 	
-	pix = new unsigned char[ (int)(camWidth * camHeight * 3.0) ];
-    
-    bLearnBackground = true;
-    threshold = 80;
+	pix = new unsigned char[(int)(camWidth * camHeight * 4.0)];
     
     // Setup Tweener
     Tweener.setMode(TWEENMODE_OVERRIDE);
@@ -50,11 +45,9 @@ void ofApp::setup(){
                             camHeight);
     
     themes[0].setup("themes/pack_1/sounds/",
-                    224.0f,
                     themeRect,
                     "themes/pack_1/images/interface.png");
     themes[1].setup("themes/pack_2/sounds/",
-                    192.0f,
                     themeRect,
                     "themes/pack_2/images/interface.png");
     
@@ -63,12 +56,26 @@ void ofApp::setup(){
     sequencers[0].setup(themes[0].gridRect, columns, rows);
     sequencers[1].setup(themes[1].gridRect, columns, rows);
     
-    currentThemeId = 1;
+    // Load settings
+    if (settingsXml.loadFile(ofxiOSGetDocumentsDirectory() + "settings.xml")) {
+		ofLog(OF_LOG_NOTICE, "settings.xml loaded from documents folder!");
+	} else if (settingsXml.loadFile("settings.xml")) {
+		ofLog(OF_LOG_NOTICE, "mySettings.xml loaded from data folder!");
+	} else {
+		ofLog(OF_LOG_WARNING, "unable to load mySettings.xml check data/ folder");
+	}
+    
+    //read the colors from XML
+	//if the settings file doesn't exist we assigns default values (170, 190, 240)
+	threshold = settingsXml.getValue("TRACKING:THRESHOLD", 80.f);
+    currentThemeId = settingsXml.getValue("THEME:ID", 1);
+    bpm = settingsXml.getValue("THEME:BPM", 136.f);
     
     // Set initial values
     totalSteps = columns;
     currentStep = 0;
     lastStep = 0;
+    
     
     settingsViewController = [[SettingsViewController alloc]
                               initWithNibName:@"SettingsViewController" bundle:nil];
@@ -84,13 +91,18 @@ void ofApp::update(){
     unsigned char * src = vidGrabber.getPixels();
 	int totalPix = vidGrabber.getWidth() * vidGrabber.getHeight() * 3;
 	
-	for(int k = 0; k < totalPix; k+= 3){
-		pix[k  ] = src[k];
-		pix[k+1] = src[k+1];
-		pix[k+2] = src[k+2];
+	for(int k = 0; k < totalPix; k += 3){
+        
+        pix[k  ] = src[k];
+        pix[k+1] = src[k+1];
+        pix[k+2] = src[k+2];
+        
+        if (src[k] == 0 && src[k+1] == 0 && src[k+2] == 0) {
+            pix[k+3] = 0;
+        } else {
+            pix[k+3] = 255;
+        }
 	}
-    
-    vidTexture.loadData(pix, vidGrabber.getWidth(), vidGrabber.getHeight(), GL_RGB);
     
     if (vidGrabber.isFrameNew()){
         
@@ -124,29 +136,31 @@ void ofApp::update(){
         }
 	}
     
-    // Update Tweener
-    Tweener.update();
-    
-    // Update bpm
-    bpmTapper.update();
-    currentStep = (int)bpmTapper.beatTime() % totalSteps;
-    if (currentStep > totalSteps){
-        currentStep = 0;
-    }
-    
-    // Update sequencer
-    currentSequencer->update(currentStep);
-    
-    // Check on/off states and play cell sound
-    for (int i=0; i<currentSequencer->tracks.size(); i++) {
-        SequencerTrack *track = &currentSequencer->tracks[i];
-        if (track->cells[currentStep].getState() != cellOff && lastStep != currentStep){
-            int j = currentStep + i * columns;
-            if (themes[currentThemeId].players[j].isLoaded())
-                themes[currentThemeId].players[j].play();
+    if (bPlay) {
+        // Update Tweener
+        Tweener.update();
+        
+        // Update bpm
+        bpmTapper.update();
+        currentStep = (int)bpmTapper.beatTime() % totalSteps;
+        if (currentStep > totalSteps){
+            currentStep = 0;
         }
+        
+        // Update sequencer
+        currentSequencer->update(currentStep);
+        
+        // Check on/off states and play cell sound
+        for (int i=0; i<currentSequencer->tracks.size(); i++) {
+            SequencerTrack *track = &currentSequencer->tracks[i];
+            if (track->cells[currentStep].getState() != cellOff && lastStep != currentStep){
+                int j = currentStep + i * columns;
+                if (themes[currentThemeId].players[j].isLoaded())
+                    themes[currentThemeId].players[j].play();
+            }
+        }
+        lastStep = currentStep;
     }
-    lastStep = currentStep;
     
     sequencerFbo.begin();
     ofClear(255);
@@ -164,11 +178,10 @@ void ofApp::draw(){
     
     ofPushMatrix();
     ofTranslate((ofGetWidth()-camWidth*drawResizeFactor)/2, (ofGetHeight()-camHeight*drawResizeFactor)/2);
-    ofTranslate(115, 0);
     ofScale(drawResizeFactor, drawResizeFactor);
     if (settingsViewController.view.hidden) {
-        ofSetColor(255, 50);
-        grayImage.draw(0, 0, camWidth, camHeight);
+        // ofSetColor(255, 50);
+        // grayImage.draw(0, 0, camWidth, camHeight);
         ofSetColor(200, 100);
         grayDiff.draw(0, 0, camWidth, camHeight);
     } else {
@@ -189,6 +202,8 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit(){
     
+    saveSettings();
+    
     currentThemeId.removeListener(this, &ofApp::currentThemeIdChanged);
     bpm.removeListener(this, &ofApp::bpmChanged);
     
@@ -202,9 +217,11 @@ void ofApp::exit(){
     delete currentSequencer;
 }
 
+#pragma mark - Touch Events
+
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs & touch){
-    bLearnBackground = true;
+
 }
 
 //--------------------------------------------------------------
@@ -240,6 +257,9 @@ void ofApp::touchCancelled(ofTouchEventArgs & touch){
     
 }
 
+
+#pragma mark - Device Events
+
 //--------------------------------------------------------------
 void ofApp::lostFocus(){
 
@@ -263,6 +283,20 @@ void ofApp::deviceOrientationChanged(int newOrientation){
 }
 
 
+#pragma mark - Other
+
+//--------------------------------------------------------------
+void ofApp::saveSettings(){
+    
+    settingsXml.setValue("TRACKING:THRESHOLD", threshold);
+	settingsXml.setValue("THEME:ID", currentThemeId);
+    settingsXml.setValue("THEME:BPM", bpm);
+    
+    settingsXml.saveFile(ofxiOSGetDocumentsDirectory() + "settings.xml");
+    ofLog(OF_LOG_NOTICE, "Settings saved");
+}
+
+
 #pragma mark - ofParameter Event Listeners
 
 //--------------------------------------------------------------
@@ -276,8 +310,6 @@ void ofApp::currentThemeIdChanged(int &newThemeId){
     sequencerFbo.begin();
     ofClear(0, 0, 0, 0);
     sequencerFbo.end();
-    
-    bpmTapper.setBpm(currentTheme->bpm);
 }
 
 //--------------------------------------------------------------

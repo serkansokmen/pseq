@@ -28,6 +28,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     myApp = (ofApp*)ofGetAppPtr();
+    
+    [self.bpmSlider setValue:myApp->bpm];
+    [self.thresholdSlider setValue:myApp->threshold];
+    [self.themeSelector setSelectedSegmentIndex:myApp->currentThemeId];
 }
 
 - (void)didReceiveMemoryWarning
@@ -36,20 +40,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)setBPM:(id)sender
+- (IBAction)setBPM:(UISlider *)sender
 {
-    UISlider * slider = sender;
-    myApp->bpmTapper.setBpm([slider value]);
+    myApp->bpm = [sender value];
 }
 
-- (IBAction)setThreshold:(id)sender
+- (IBAction)setThreshold:(UISlider *)sender
 {
-    UISlider * slider = sender;
-    myApp->threshold = [slider value];
+    myApp->threshold = [sender value];
 }
 
-- (IBAction)done:(id)sender
+- (IBAction)done:(UIButton *)sender
 {
+    myApp->saveSettings();
     self.view.hidden = YES;
 }
 
@@ -57,11 +60,30 @@
 {
     UISegmentedControl * segControl = sender;
     myApp->currentThemeId = [segControl selectedSegmentIndex];
+    [self.bpmSlider setValue:myApp->bpm];
 }
 
-- (IBAction)clearBackground:(id)sender
+- (IBAction)clearBackground:(UIButton *)sender
 {
     myApp->bLearnBackground = true;
 }
 
+- (IBAction)togglePlay:(UISwitch *)sender
+{
+    if ([sender isOn]) {
+        myApp->bPlay = true;
+        myApp->bpmTapper.startFresh();
+    } else {
+        myApp->bpmTapper.startFresh();
+        myApp->bpmTapper.update();
+        myApp->bPlay = false;
+    }
+}
+
+- (void)dealloc {
+    [_bpmSlider release];
+    [_themeSelector release];
+    [_thresholdSlider release];
+    [super dealloc];
+}
 @end
