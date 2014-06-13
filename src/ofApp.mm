@@ -109,7 +109,7 @@ void ofApp::update(){
         grayDiff.threshold(threshold);
         
         // Find contours
-        contourFinder.findContours(grayDiff, 20, camWidth/columns, 10, false);
+        contourFinder.findContours(grayDiff, 20, camWidth*camHeight/2, 10, false);
         
         // Store objects' centers
         vector<ofxCvBlob> &blobs = contourFinder.blobs;
