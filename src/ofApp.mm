@@ -157,7 +157,7 @@ void ofApp::update(){
         for (auto track : currentSequencer->tracks) {
             if (track.cells[currentStep].getState() != cellOff && lastStep != currentStep){
 
-                // FIXME: Modulo by 4 until new sound banks arrive
+                // FIXME: Change modulation by number of sound banks
                 int j = (currentStep%4 + i * columns%4);
                 if (themes[currentThemeId].players[j].isLoaded())
                     themes[currentThemeId].players[j].play();
@@ -182,21 +182,11 @@ void ofApp::draw(){
     currentTheme->background.draw(0, 0, ofGetWidth(), ofGetHeight());
     
     ofPushMatrix();
-    ofTranslate((ofGetWidth()-camWidth*drawResizeFactor)/2, (ofGetHeight()-camHeight*drawResizeFactor)/2);
+    ofTranslate((ofGetWidth()-camWidth*drawResizeFactor)/2,
+                (ofGetHeight()-camHeight*drawResizeFactor)/2);
     ofScale(drawResizeFactor, drawResizeFactor);
-    if (settingsViewController.view.hidden) {
-        // ofSetColor(255, 50);
-        // grayImage.draw(0, 0, camWidth, camHeight);
-        ofSetColor(200, 100);
-        grayDiff.draw(0, 0, camWidth, camHeight);
-    } else {
-        // processedImg.draw(0, 0, camWidth, camHeight);
-        ofSetColor(255, 50);
-        grayImage.draw(0, 0, camWidth, camHeight);
-        ofSetColor(200, 100);
-        grayDiff.draw(0, 0, camWidth, camHeight);
-    }
-    ofSetColor(255, 255);
+    processedImg.draw(0, 0, camWidth, camHeight);
+    grayDiff.draw(0, 0, camWidth, camHeight);
     contourFinder.draw(0, 0, camWidth, camHeight);
     
     // Draw sequencer
