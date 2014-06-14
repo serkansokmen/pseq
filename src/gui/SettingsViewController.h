@@ -21,9 +21,11 @@
 
 - (IBAction)setBPM:(UISlider *)sender;
 - (IBAction)setThreshold:(UISlider *)sender;
-- (IBAction)done:(UIButton *)sender;
+- (IBAction)done:(id)sender;
 - (IBAction)switchTheme:(UISegmentedControl *)sender;
-- (IBAction)clearBackground:(UIButton *)sender;
+- (IBAction)clearBackground:(id)sender;
 - (IBAction)togglePlay:(UISwitch *)sender;
+- (IBAction)setColumns:(UIStepper *)sender;
+- (IBAction)setRows:(UIStepper *)sender;
 
 @end

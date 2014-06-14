@@ -16,10 +16,9 @@ class SequencerTheme {
     
 public:
     
-    void setup(string soundPath, const ofRectangle &rect, string bgPath);
+    void setup(string soundPath, string bgPath);
     
     string      soundPath;
-    ofRectangle gridRect;
     ofImage     background;
     
     vector<ofSoundPlayer> players;

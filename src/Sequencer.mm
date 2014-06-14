@@ -9,19 +9,19 @@
 #include "Sequencer.h"
 
 //--------------------------------------------------------------
-void Sequencer::setup(const ofRectangle rect, int columCount, int rowCount){
+void Sequencer::setup(const ofRectangle rect, int columnCount, int rowCount){
     
     diffTime = 0;
     
-    columns = columCount;
+    columns = columnCount;
     rows = rowCount;
     
     // Dimensions
     boundingBox.set(rect);
     
     currentStep = 0;
-    stepButtonWidth = rect.getWidth() / columns;
-    stepButtonHeight = rect.getHeight() / rows;
+    stepButtonWidth = boundingBox.getWidth() / columns;
+    stepButtonHeight = boundingBox.getHeight() / rows;
     
     // Clear and re-assign tracks
     tracks.clear();
@@ -33,7 +33,10 @@ void Sequencer::setup(const ofRectangle rect, int columCount, int rowCount){
         float val = ofMap(i, 0, rows, 0.0f, 255.0f);
         
         tracks[i].setup(i,
-                        ofRectangle(rect.getX(), stepButtonHeight * i, rect.getWidth(), stepButtonHeight),
+                        ofRectangle(boundingBox.getX(),
+                                    stepButtonHeight * i,
+                                    boundingBox.getWidth(),
+                                    stepButtonHeight),
                         columns,
                         ofColor(val, 255, 255));
     }
@@ -120,3 +123,4 @@ void Sequencer::setPattern(int pattern[]){
     }
     
 }
+

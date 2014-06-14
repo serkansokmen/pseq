@@ -50,7 +50,7 @@
     myApp->threshold = [sender value];
 }
 
-- (IBAction)done:(UIButton *)sender
+- (IBAction)done:(id)sender
 {
     myApp->saveSettings();
     self.view.hidden = YES;
@@ -63,7 +63,7 @@
     [self.bpmSlider setValue:myApp->bpm];
 }
 
-- (IBAction)clearBackground:(UIButton *)sender
+- (IBAction)clearBackground:(id)sender
 {
     myApp->bLearnBackground = true;
 }
@@ -78,6 +78,16 @@
         myApp->bpmTapper.update();
         myApp->bPlay = false;
     }
+}
+
+- (IBAction)setColumns:(UIStepper *)sender
+{
+    myApp->columns = (int)[sender value];
+}
+
+- (IBAction)setRows:(UIStepper *)sender
+{
+    myApp->rows = (int)[sender value];
 }
 
 - (void)dealloc {

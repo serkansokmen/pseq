@@ -33,28 +33,22 @@ void ofApp::setup(){
     // Setup Tweener
     Tweener.setMode(TWEENMODE_OVERRIDE);
     
-    currentThemeId.addListener(this, &ofApp::currentThemeIdChanged);
-    bpm.addListener(this, &ofApp::bpmChanged);
-    
     // Initialize Themes
     themes.assign(2, SequencerTheme());
-    ofRectangle themeRect;
     themeRect.setFromCenter(0,
                             0,
                             camWidth,
                             camHeight);
     
     themes[0].setup("themes/pack_1/sounds/",
-                    themeRect,
                     "themes/pack_1/images/interface.png");
     themes[1].setup("themes/pack_2/sounds/",
-                    themeRect,
                     "themes/pack_2/images/interface.png");
     
     // Initialize Sequencer
     sequencers.assign(2, Sequencer());
-    sequencers[0].setup(themes[0].gridRect, columns, rows);
-    sequencers[1].setup(themes[1].gridRect, columns, rows);
+    sequencers[0].setup(themeRect, columns, rows);
+    sequencers[1].setup(themeRect, columns, rows);
     
     // Load settings
     if (settingsXml.loadFile(ofxiOSGetDocumentsDirectory() + "settings.xml")) {
@@ -65,11 +59,18 @@ void ofApp::setup(){
 		ofLog(OF_LOG_WARNING, "unable to load mySettings.xml check data/ folder");
 	}
     
-    //read the colors from XML
-	//if the settings file doesn't exist we assigns default values (170, 190, 240)
+    // Add event listeners
+    currentThemeId.addListener(this, &ofApp::currentThemeIdChanged);
+    bpm.addListener(this, &ofApp::bpmChanged);
+    columns.addListener(this, &ofApp::columnsChanged);
+    rows.addListener(this, &ofApp::rowsChanged);
+    
+    // Read settings from xml, or else assign defaults
 	threshold = settingsXml.getValue("TRACKING:THRESHOLD", 80.f);
     currentThemeId = settingsXml.getValue("THEME:ID", 1);
     bpm = settingsXml.getValue("THEME:BPM", 136.f);
+    columns = settingsXml.getValue("SEQUENCER:COLUMNS", 8);
+    rows = settingsXml.getValue("SEQUENCER:ROWS", 8);
     
     // Set initial values
     totalSteps = columns;
@@ -107,6 +108,7 @@ void ofApp::update(){
     if (vidGrabber.isFrameNew()){
         
         colorImg.setFromPixels(pix, vidGrabber.getWidth(), vidGrabber.getHeight());
+        colorImg.blurGaussian();
         processedImg = colorImg;
         
         // Convert to grayscale
@@ -151,13 +153,16 @@ void ofApp::update(){
         currentSequencer->update(currentStep);
         
         // Check on/off states and play cell sound
-        for (int i=0; i<currentSequencer->tracks.size(); i++) {
-            SequencerTrack *track = &currentSequencer->tracks[i];
-            if (track->cells[currentStep].getState() != cellOff && lastStep != currentStep){
-                int j = currentStep + i * columns;
+        int i = 0;
+        for (auto track : currentSequencer->tracks) {
+            if (track.cells[currentStep].getState() != cellOff && lastStep != currentStep){
+
+                // FIXME: Modulo by 4 until new sound banks arrive
+                int j = (currentStep%4 + i * columns%4);
                 if (themes[currentThemeId].players[j].isLoaded())
                     themes[currentThemeId].players[j].play();
             }
+            i++;
         }
         lastStep = currentStep;
     }
@@ -206,6 +211,8 @@ void ofApp::exit(){
     
     currentThemeId.removeListener(this, &ofApp::currentThemeIdChanged);
     bpm.removeListener(this, &ofApp::bpmChanged);
+    columns.removeListener(this, &ofApp::columnsChanged);
+    rows.removeListener(this, &ofApp::rowsChanged);
     
     //    ofxRemoveTSPSListeners(this);
     themes.clear();
@@ -289,8 +296,10 @@ void ofApp::deviceOrientationChanged(int newOrientation){
 void ofApp::saveSettings(){
     
     settingsXml.setValue("TRACKING:THRESHOLD", threshold);
-	settingsXml.setValue("THEME:ID", currentThemeId);
+    settingsXml.setValue("THEME:ID", currentThemeId);
     settingsXml.setValue("THEME:BPM", bpm);
+    settingsXml.setValue("SEQUENCER:COLUMNS", columns);
+    settingsXml.setValue("SEQUENCER:ROWS", rows);
     
     settingsXml.saveFile(ofxiOSGetDocumentsDirectory() + "settings.xml");
     ofLog(OF_LOG_NOTICE, "Settings saved");
@@ -306,7 +315,7 @@ void ofApp::currentThemeIdChanged(int &newThemeId){
     currentSequencer = &sequencers[newThemeId];
     
     // Allocate draw FBO
-    sequencerFbo.allocate(currentTheme->gridRect.getWidth(), currentTheme->gridRect.getHeight());
+    sequencerFbo.allocate(themeRect.getWidth(), themeRect.getHeight());
     sequencerFbo.begin();
     ofClear(0, 0, 0, 0);
     sequencerFbo.end();
@@ -315,4 +324,25 @@ void ofApp::currentThemeIdChanged(int &newThemeId){
 //--------------------------------------------------------------
 void ofApp::bpmChanged(float &newBpm){
     bpmTapper.setBpm(newBpm);
+}
+
+//--------------------------------------------------------------
+void ofApp::columnsChanged(int &newColumns){
+    Tweener.removeAllTweens();
+    sequencers.assign(2, Sequencer());
+    sequencers[0].setup(themeRect, newColumns, rows);
+    sequencers[1].setup(themeRect, newColumns, rows);
+    
+    // Set initial values
+    totalSteps = newColumns;
+    currentStep = 0;
+    lastStep = 0;
+}
+
+//--------------------------------------------------------------
+void ofApp::rowsChanged(int &newRows){
+    Tweener.removeAllTweens();
+    sequencers.assign(2, Sequencer());
+    sequencers[0].setup(themeRect, columns, newRows);
+    sequencers[1].setup(themeRect, columns, newRows);
 }

@@ -20,9 +20,9 @@ using namespace msa;
 
 class ofApp : public ofxiOSApp {
 	
+    ofRectangle themeRect;
+    
     float       drawResizeFactor = 1.68f;
-    int         columns = 4;
-    int         rows = 4;
     
     int         lastStep;
     int         totalSteps;
@@ -50,6 +50,8 @@ public:
     
     void currentThemeIdChanged(int &newThemeId);
     void bpmChanged(float &newBpm);
+    void columnsChanged(int &newColumns);
+    void rowsChanged(int &newRows);
     
     void saveSettings();
     
@@ -73,6 +75,8 @@ public:
     ofFbo           sequencerFbo;
     
     ofParameter<float>      bpm;
+    ofParameter<int>        columns;
+    ofParameter<int>        rows;
     ofxXmlSettings          settingsXml;
     
     ofParameter<int>        currentThemeId;
