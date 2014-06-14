@@ -26,9 +26,8 @@ void ofApp::setup(){
     vidGrabber.initGrabber(camWidth, camHeight, OF_PIXELS_BGRA);
 	colorImg.allocate(camWidth, camHeight);
     grayImage.allocate(camWidth, camHeight);
-    processedImg.allocate(camWidth, camHeight);
 	
-	pix = new unsigned char[(int)(camWidth * camHeight * 4.0)];
+	pix = new unsigned char[(int)(camWidth * camHeight * 3)];
     
     // Setup Tweener
     Tweener.setMode(TWEENMODE_OVERRIDE);
@@ -93,23 +92,15 @@ void ofApp::update(){
 	int totalPix = vidGrabber.getWidth() * vidGrabber.getHeight() * 3;
 	
 	for(int k = 0; k < totalPix; k += 3){
-        
         pix[k  ] = src[k];
         pix[k+1] = src[k+1];
         pix[k+2] = src[k+2];
-        
-        if (src[k] == 0 && src[k+1] == 0 && src[k+2] == 0) {
-            pix[k+3] = 0;
-        } else {
-            pix[k+3] = 255;
-        }
 	}
     
     if (vidGrabber.isFrameNew()){
         
         colorImg.setFromPixels(pix, vidGrabber.getWidth(), vidGrabber.getHeight());
         colorImg.blurGaussian();
-        processedImg = colorImg;
         
         // Convert to grayscale
         grayImage = colorImg;
@@ -185,7 +176,7 @@ void ofApp::draw(){
     ofTranslate((ofGetWidth()-camWidth*drawResizeFactor)/2,
                 (ofGetHeight()-camHeight*drawResizeFactor)/2);
     ofScale(drawResizeFactor, drawResizeFactor);
-    processedImg.draw(0, 0, camWidth, camHeight);
+    colorImg.draw(0, 0, camWidth, camHeight);
     grayDiff.draw(0, 0, camWidth, camHeight);
     contourFinder.draw(0, 0, camWidth, camHeight);
     

@@ -59,7 +59,6 @@ public:
     unsigned char   *pix;
     
     ofxCvColorImage			colorImg;
-    ofxCvColorImage         processedImg;
     ofxCvGrayscaleImage 	grayImage;
     ofxCvGrayscaleImage 	grayBg;
     ofxCvGrayscaleImage 	grayDiff;
