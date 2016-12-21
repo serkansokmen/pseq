@@ -1,7 +1,5 @@
-ofxXmlSettings
-ofxiOS
 ofxMSABPMTapper
 ofxMSAInteractiveObject
 ofxMSATimer
-ofxTweener
 ofxOpenCv
+ofxXmlSettings

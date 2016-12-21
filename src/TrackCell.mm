@@ -45,19 +45,19 @@ void TrackCell::draw(){
             ofPushStyle();
             ofSetColor(color, 255);
             ofNoFill();
-            ofRect(innerBox);
+            ofDrawRectangle(innerBox);
             ofPopStyle();
             break;
         case cellActive:
             ofPushStyle();
             ofSetColor(color, alpha);
-            ofRect(innerBox);
+            ofDrawRectangle(innerBox);
             ofPopStyle();
             break;
         case cellOn:
             ofPushStyle();
             ofSetColor(color, alpha);
-            ofRect(innerBox);
+            ofDrawRectangle(innerBox);
             ofPopStyle();
             break;
             
@@ -73,13 +73,16 @@ void TrackCell::setState(TrackCellState s){
     
     switch (state) {
         case cellOff:
-            Tweener.addTween(alpha, 50, .2);
+//            Tweener.addTween(alpha, 50, .2);
+            alpha = 50;
             break;
         case cellActive:
-            Tweener.addTween(alpha, 150, .2);
+//            Tweener.addTween(alpha, 150, .2);
+            alpha = 150;
             break;
         case cellOn:
-            Tweener.addTween(alpha, 255, .2);
+//            Tweener.addTween(alpha, 255, .2);
+            alpha = 255;
             break;
             
         default:
@@ -94,8 +97,10 @@ const TrackCellState &TrackCell::getState(){
 
 //--------------------------------------------------------------
 void TrackCell::setColor(ofColor c){
-    Tweener.addTween(hue, c.getHue(), .2);
-    Tweener.addTween(saturation, c.getSaturation(), .2);
+//    Tweener.addTween(hue, c.getHue(), .2);
+//    Tweener.addTween(saturation, c.getSaturation(), .2);
+    hue = c.getHue();
+    saturation = c.getSaturation();
 }
 
 //--------------------------------------------------------------

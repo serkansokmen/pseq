@@ -87,12 +87,12 @@ void Sequencer::draw(){
     
     ofNoFill();
     ofSetColor(ofColor::greenYellow, 200);
-    ofRect(scrubberRectTop);
-    ofRect(scrubberRectBottom);
+    ofDrawRectangle(scrubberRectTop);
+    ofDrawRectangle(scrubberRectBottom);
     
     ofFill();
     ofSetColor(ofColor::greenYellow, 100);
-    ofRect(scrubberRect);
+    ofDrawRectangle(scrubberRect);
     
     ofPopStyle();
     ofPopMatrix();

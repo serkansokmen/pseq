@@ -13,7 +13,7 @@ void SequencerTheme::setup(string soundPath, string bgPath){
     
     this->soundPath = soundPath;
     
-    background.loadImage(bgPath);
+    background.load(bgPath);
     
     // Sound
     ofDirectory dir;
@@ -24,7 +24,7 @@ void SequencerTheme::setup(string soundPath, string bgPath){
         
         for (int i=0; i<dir.size(); i++){
             ofSoundPlayer player;
-            player.loadSound(dir.getPath(i));
+            player.load(dir.getPath(i));
             players.push_back(player);
         }
     }

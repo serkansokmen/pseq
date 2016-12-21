@@ -5,7 +5,7 @@
 #pragma mark - ofApp
 
 
-SettingsViewController *settingsViewController;
+//SettingsViewController *settingsViewController;
 
 
 //--------------------------------------------------------------
@@ -23,14 +23,11 @@ void ofApp::setup(){
     ofSetFrameRate(30);
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    vidGrabber.initGrabber(camWidth, camHeight, OF_PIXELS_BGRA);
+    vidGrabber.setup(camWidth, camHeight, OF_PIXELS_BGRA);
 	colorImg.allocate(camWidth, camHeight);
     grayImage.allocate(camWidth, camHeight);
 	
 	pix = new unsigned char[(int)(camWidth * camHeight * 3)];
-    
-    // Setup Tweener
-    Tweener.setMode(TWEENMODE_OVERRIDE);
     
     // Initialize Themes
     themes.assign(2, SequencerTheme());
@@ -77,10 +74,10 @@ void ofApp::setup(){
     lastStep = 0;
     
     
-    settingsViewController = [[SettingsViewController alloc]
-                              initWithNibName:@"SettingsViewController" bundle:nil];
-    [ofxiOSGetGLParentView() addSubview:settingsViewController.view];
-    [settingsViewController.view setHidden:YES];
+//    settingsViewController = [[SettingsViewController alloc]
+//                              initWithNibName:@"SettingsViewController" bundle:nil];
+//    [ofxiOSGetGLParentView() addSubview:settingsViewController.view];
+//    [settingsViewController.view setHidden:YES];
 }
 
 //--------------------------------------------------------------
@@ -88,7 +85,7 @@ void ofApp::update(){
     
     vidGrabber.update();
     
-    unsigned char * src = vidGrabber.getPixels();
+    ofPixels src = vidGrabber.getPixels();
 	int totalPix = vidGrabber.getWidth() * vidGrabber.getHeight() * 3;
 	
 	for(int k = 0; k < totalPix; k += 3){
@@ -130,9 +127,6 @@ void ofApp::update(){
 	}
     
     if (bPlay) {
-        // Update Tweener
-        Tweener.update();
-        
         // Update bpm
         bpmTapper.update();
         currentStep = (int)bpmTapper.beatTime() % totalSteps;
@@ -225,17 +219,17 @@ void ofApp::touchUp(ofTouchEventArgs & touch){
 //--------------------------------------------------------------
 void ofApp::touchDoubleTap(ofTouchEventArgs & touch){
     
-    if( settingsViewController.view.hidden ){
-		settingsViewController.view.hidden = NO;
-        
-        NSTimeInterval animationDuration = 200;
-        CGRect newFrameSize = CGRectMake(0, 0, ofGetWidth()/2, ofGetHeight()/2);
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:animationDuration];
-        settingsViewController.view.frame = newFrameSize;
-        [UIView commitAnimations];
-        
-	}
+//    if( settingsViewController.view.hidden ){
+//		settingsViewController.view.hidden = NO;
+//        
+//        NSTimeInterval animationDuration = 200;
+//        CGRect newFrameSize = CGRectMake(0, 0, ofGetWidth()/2, ofGetHeight()/2);
+//        [UIView beginAnimations:nil context:NULL];
+//        [UIView setAnimationDuration:animationDuration];
+//        settingsViewController.view.frame = newFrameSize;
+//        [UIView commitAnimations];
+//        
+//	}
     bLearnBackground = true;
     
 }
@@ -309,7 +303,6 @@ void ofApp::bpmChanged(float &newBpm){
 
 //--------------------------------------------------------------
 void ofApp::columnsChanged(int &newColumns){
-    Tweener.removeAllTweens();
     sequencers.assign(2, Sequencer());
     sequencers[0].setup(themeRect, newColumns, rows);
     sequencers[1].setup(themeRect, newColumns, rows);
@@ -322,7 +315,6 @@ void ofApp::columnsChanged(int &newColumns){
 
 //--------------------------------------------------------------
 void ofApp::rowsChanged(int &newRows){
-    Tweener.removeAllTweens();
     sequencers.assign(2, Sequencer());
     sequencers[0].setup(themeRect, columns, newRows);
     sequencers[1].setup(themeRect, columns, newRows);
